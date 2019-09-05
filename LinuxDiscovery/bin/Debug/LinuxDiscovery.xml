@@ -1,0 +1,349 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ManagementPack SchemaVersion="2.0" ContentReadable="true" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Manifest>
+    <Identity>
+      <ID>LinuxDiscovery</ID>
+      <Version>1.0.0.31</Version>
+    </Identity>
+    <Name>LinuxDiscovery</Name>
+    <References>
+      <Reference Alias="Linux">
+        <ID>Microsoft.Linux.Library</ID>
+        <Version>10.19.1008.0</Version>
+        <PublicKeyToken>31bf3856ad364e35</PublicKeyToken>
+      </Reference>
+      <Reference Alias="WSMan">
+        <ID>Microsoft.SystemCenter.WSManagement.Library</ID>
+        <Version>10.19.10050.0</Version>
+        <PublicKeyToken>31bf3856ad364e35</PublicKeyToken>
+      </Reference>
+      <Reference Alias="Unix">
+        <ID>Microsoft.Unix.Library</ID>
+        <Version>10.19.1008.0</Version>
+        <PublicKeyToken>31bf3856ad364e35</PublicKeyToken>
+      </Reference>
+      <Reference Alias="UnixShellCmdL">
+        <ID>Microsoft.Unix.ShellCommand.Library</ID>
+        <Version>10.19.1008.0</Version>
+        <PublicKeyToken>31bf3856ad364e35</PublicKeyToken>
+      </Reference>
+      <Reference Alias="Health">
+        <ID>System.Health.Library</ID>
+        <Version>7.0.8433.0</Version>
+        <PublicKeyToken>31bf3856ad364e35</PublicKeyToken>
+      </Reference>
+      <Reference Alias="System">
+        <ID>System.Library</ID>
+        <Version>7.5.8501.0</Version>
+        <PublicKeyToken>31bf3856ad364e35</PublicKeyToken>
+      </Reference>
+    </References>
+  </Manifest>
+  <TypeDefinitions>
+    <EntityTypes>
+      <ClassTypes>
+        <ClassType ID="LinuxDiscovery.DemoLinuxClass" Abstract="false" Accessibility="Public" Hosted="true" Singleton="false" Base="Linux!Microsoft.Linux.UserApplication">
+          <Property ID="RoleName" Type="string" Key="true" />
+        </ClassType>
+      </ClassTypes>
+    </EntityTypes>
+    <ModuleTypes>
+      <DataSourceModuleType ID="LinuxDiscovery.TimedShellCommand.Discovery.DataSource" Accessibility="Public" Batching="false">
+        <Configuration>
+          <IncludeSchemaTypes>
+            <SchemaType>System!System.Discovery.MapperSchema</SchemaType>
+            <SchemaType>System!System.ExpressionEvaluatorSchema</SchemaType>
+          </IncludeSchemaTypes>
+          <xsd:element name="Interval" type="xsd:integer" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="TargetSystem" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="ShellCommand" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="Timeout" type="xsd:integer" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="UserName" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="Password" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="FilterExpression" type="ExpressionType" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="ClassId" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="InstanceSettings" type="SettingsType" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </Configuration>
+        <OverrideableParameters>
+          <OverrideableParameter ID="Interval" Selector="$Config/Interval$" ParameterType="int" />
+          <OverrideableParameter ID="Timeout" Selector="$Config/Timeout$" ParameterType="int" />
+        </OverrideableParameters>
+        <ModuleImplementation Isolation="Any">
+          <Composite>
+            <MemberModules>
+              <DataSource ID="Scheduler" TypeID="System!System.Discovery.Scheduler">
+                <Scheduler>
+                  <SimpleReccuringSchedule>
+                    <Interval>$Config/Interval$</Interval>
+                    <SyncTime />
+                  </SimpleReccuringSchedule>
+                  <ExcludeDates />
+                </Scheduler>
+              </DataSource>
+              <ProbeAction ID="InvokeProbe" TypeID="LinuxDiscovery.ShellCommand.ProbeAction">
+                <TargetSystem>$Config/TargetSystem$</TargetSystem>
+                <ShellCommand>$Config/ShellCommand$</ShellCommand>
+                <Timeout>$Config/Timeout$</Timeout>
+                <UserName>$Config/UserName$</UserName>
+                <Password>$Config/Password$</Password>
+              </ProbeAction>
+              <ConditionDetection ID="Filter" TypeID="System!System.ExpressionFilter">
+                <Expression>$Config/FilterExpression$</Expression>
+              </ConditionDetection>
+              <ConditionDetection ID="Mapper" TypeID="System!System.Discovery.ClassSnapshotDataMapper">
+                <ClassId>$Config/ClassId$</ClassId>
+                <InstanceSettings>$Config/InstanceSettings$</InstanceSettings>
+              </ConditionDetection>
+            </MemberModules>
+            <Composition>
+              <Node ID="Mapper">
+                <Node ID="Filter">
+                  <Node ID="InvokeProbe">
+                    <Node ID="Scheduler" />
+                  </Node>
+                </Node>
+              </Node>
+            </Composition>
+          </Composite>
+        </ModuleImplementation>
+        <OutputType>System!System.Discovery.Data</OutputType>
+      </DataSourceModuleType>
+      <ProbeActionModuleType ID="LinuxDiscovery.ShellCommand.ProbeAction" Accessibility="Public" Batching="false" PassThrough="false">
+        <Configuration>
+          <xsd:element name="TargetSystem" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="ShellCommand" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="Timeout" type="xsd:integer" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="UserName" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="Password" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </Configuration>
+        <ModuleImplementation Isolation="Any">
+          <Composite>
+            <MemberModules>
+              <ProbeAction ID="InvokeProbe" TypeID="Unix!Microsoft.Unix.WSMan.Invoke.VarPriv.ProbeAction">
+                <TargetSystem>$Config/TargetSystem$</TargetSystem>
+                <UserName>$Config/UserName$</UserName>
+                <Password>$Config/Password$</Password>
+                <Uri>http://schemas.microsoft.com/wbem/wscim/1/cim-schema/2/SCX_OperatingSystem?__cimnamespace=root/scx</Uri>
+                <Selector />
+                <InvokeAction>ExecuteShellCommand</InvokeAction>
+                <Input>&lt;p:ExecuteShellCommand_INPUT xmlns:p="http://schemas.microsoft.com/wbem/wscim/1/cim-schema/2/SCX_OperatingSystem"&gt;&lt;p:command&gt;$Config/ShellCommand$&lt;/p:command&gt;&lt;p:timeout&gt;$Config/Timeout$&lt;/p:timeout&gt;&lt;/p:ExecuteShellCommand_INPUT&gt;</Input>
+                <TimeOutInMS>300000</TimeOutInMS>
+              </ProbeAction>
+            </MemberModules>
+            <Composition>
+              <Node ID="InvokeProbe" />
+            </Composition>
+          </Composite>
+        </ModuleImplementation>
+        <OutputType>WSMan!Microsoft.SystemCenter.WSManagement.WSManData</OutputType>
+        <InputType>System!System.BaseData</InputType>
+      </ProbeActionModuleType>
+      <ProbeActionModuleType ID="Unix.Authoring.ShellScript.ProbeAction" Accessibility="Public" Batching="false" PassThrough="false">
+        <Configuration>
+          <xsd:element name="TargetSystem" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="ShellScript" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="ScriptArguments" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="Timeout" type="xsd:integer" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="UserName" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="Password" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </Configuration>
+        <ModuleImplementation Isolation="Any">
+          <Composite>
+            <MemberModules>
+              <ProbeAction ID="InvokeProbe" TypeID="Unix!Microsoft.Unix.WSMan.Invoke.VarPriv.ProbeAction">
+                <TargetSystem>$Config/TargetSystem$</TargetSystem>
+                <UserName>$Config/UserName$</UserName>
+                <Password>$Config/Password$</Password>
+                <Uri>http://schemas.microsoft.com/wbem/wscim/1/cim-schema/2/SCX_OperatingSystem?__cimnamespace=root/scx</Uri>
+                <Selector />
+                <InvokeAction>ExecuteScript</InvokeAction>
+                <Input>
+                &lt;p:ExecuteScript_INPUT xmlns:p="http://schemas.microsoft.com/wbem/wscim/1/cim-schema/2/SCX_OperatingSystem"&gt;
+                &lt;p:script&gt;$Config/ShellScript$&lt;/p:script&gt;
+                &lt;p:arguments&gt;$Config/ScriptArguments$&lt;/p:arguments&gt;
+                &lt;p:timeout&gt;$Config/Timeout$&lt;/p:timeout&gt;
+                &lt;/p:ExecuteScript_INPUT&gt;
+              </Input>
+                <TimeOutInMS>300000</TimeOutInMS>
+              </ProbeAction>
+            </MemberModules>
+            <Composition>
+              <Node ID="InvokeProbe" />
+            </Composition>
+          </Composite>
+        </ModuleImplementation>
+        <OutputType>WSMan!Microsoft.SystemCenter.WSManagement.WSManData</OutputType>
+        <InputType>System!System.BaseData</InputType>
+      </ProbeActionModuleType>
+    </ModuleTypes>
+  </TypeDefinitions>
+  <Monitoring>
+    <Discoveries>
+      <Discovery ID="LinuxDiscovery.DemoLinuxClassDiscovery" Target="Linux!Microsoft.Linux.Computer" Enabled="true" ConfirmDelivery="false" Remotable="true" Priority="Normal">
+        <Category>Discovery</Category>
+        <DiscoveryTypes>
+          <DiscoveryClass TypeID="LinuxDiscovery.DemoLinuxClass" />
+        </DiscoveryTypes>
+        <DataSource ID="DS" TypeID="LinuxDiscovery.TimedShellCommand.Discovery.DataSource">
+          <Interval>300</Interval>
+          <TargetSystem>$Target/Property[Type="Unix!Microsoft.Unix.Computer"]/PrincipalName$</TargetSystem>
+          <ShellCommand>ls /opt/microsoft/scx/testscript.sh |wc -l</ShellCommand>
+          <Timeout>60</Timeout>
+          <UserName>$RunAs[Name="Unix!Microsoft.Unix.ActionAccount"]/UserName$</UserName>
+          <Password>$RunAs[Name="Unix!Microsoft.Unix.ActionAccount"]/Password$</Password>
+          <FilterExpression>
+            <RegExExpression>
+              <ValueExpression>
+                <XPathQuery>//*[local-name()="StdOut"]</XPathQuery>
+              </ValueExpression>
+              <Operator>MatchesRegularExpression</Operator>
+              <Pattern>^1</Pattern>
+            </RegExExpression>
+          </FilterExpression>
+          <ClassId>$MPElement[Name="LinuxDiscovery.DemoLinuxClass"]$</ClassId>
+          <InstanceSettings>
+            <Settings>
+              <Setting>
+                <Name>$MPElement[Name='LinuxDiscovery.DemoLinuxClass']/RoleName$</Name>
+                <Value>Demo Linux Role</Value>
+              </Setting>
+              <Setting>
+                <Name>$MPElement[Name='Unix!Microsoft.Unix.Computer']/PrincipalName$</Name>
+                <Value>$Target/Property[Type="Unix!Microsoft.Unix.Computer"]/PrincipalName$</Value>
+              </Setting>
+              <Setting>
+                <Name>$MPElement[Name="System!System.Entity"]/DisplayName$</Name>
+                <Value>$Target/Property[Type="Unix!Microsoft.Unix.Computer"]/PrincipalName$ (Linux Demo Discovery)</Value>
+              </Setting>
+            </Settings>
+          </InstanceSettings>
+        </DataSource>
+      </Discovery>
+    </Discoveries>
+    <Monitors>
+      <UnitMonitor ID="LinuxDiscovery.LinuxScriptMonitor" Accessibility="Internal" Enabled="true" Target="LinuxDiscovery.DemoLinuxClass" ParentMonitorID="Health!System.Health.AvailabilityState" Remotable="true" Priority="Normal" TypeID="UnixShellCmdL!Microsoft.Unix.ShellCommand.TwoState.MonitorType" ConfirmDelivery="false" RunAs="Unix!Microsoft.Unix.ActionAccount">
+        <Category>AvailabilityHealth</Category>
+        <AlertSettings AlertMessage="LinuxDiscovery.LinuxScriptMonitor.AlertMessage">
+          <AlertOnState>Error</AlertOnState>
+          <AutoResolve>true</AutoResolve>
+          <AlertPriority>Normal</AlertPriority>
+          <AlertSeverity>MatchMonitorHealth</AlertSeverity>
+        </AlertSettings>
+        <OperationalStates>
+          <OperationalState ID="StatusOK" MonitorTypeStateID="StatusOK" HealthState="Success" />
+          <OperationalState ID="StatusError" MonitorTypeStateID="StatusError" HealthState="Error" />
+        </OperationalStates>
+        <Configuration>
+          <Interval>90</Interval>
+          <SyncTime />
+          <TargetSystem>$Target/Host/Property[Type="Unix!Microsoft.Unix.Computer"]/NetworkName$</TargetSystem>
+          <UserName>$RunAs[Name="Unix!Microsoft.Unix.ActionAccount"]/UserName$</UserName>
+          <Password>$RunAs[Name="Unix!Microsoft.Unix.ActionAccount"]/Password$</Password>
+          <ShellCommand>/opt/microsoft/scx/testscript.sh 2</ShellCommand>
+          <TimeOut>120</TimeOut>
+          <TimeOutInMS>120000</TimeOutInMS>
+          <HealthyExpression>
+            <And>
+              <Expression>
+                <RegExExpression>
+                  <ValueExpression>
+                    <XPathQuery Type="Integer">//*[local-name()="StdOut"]</XPathQuery>
+                  </ValueExpression>
+                  <Operator>ContainsSubstring</Operator>
+                  <Pattern>OK</Pattern>
+                </RegExExpression>
+              </Expression>
+              <Expression>
+                <SimpleExpression>
+                  <ValueExpression>
+                    <XPathQuery Type="String">//*[local-name()="ReturnCode"]</XPathQuery>
+                  </ValueExpression>
+                  <Operator>Equal</Operator>
+                  <ValueExpression>
+                    <Value Type="String">0</Value>
+                  </ValueExpression>
+                </SimpleExpression>
+              </Expression>
+            </And>
+          </HealthyExpression>
+          <ErrorExpression>
+            <And>
+              <Expression>
+                <RegExExpression>
+                  <ValueExpression>
+                    <XPathQuery Type="Integer">//*[local-name()="StdOut"]</XPathQuery>
+                  </ValueExpression>
+                  <Operator>ContainsSubstring</Operator>
+                  <Pattern>NOK</Pattern>
+                </RegExExpression>
+              </Expression>
+              <Expression>
+                <SimpleExpression>
+                  <ValueExpression>
+                    <XPathQuery Type="String">//*[local-name()="ReturnCode"]</XPathQuery>
+                  </ValueExpression>
+                  <Operator>Equal</Operator>
+                  <ValueExpression>
+                    <Value Type="String">1</Value>
+                  </ValueExpression>
+                </SimpleExpression>
+              </Expression>
+            </And>
+          </ErrorExpression>
+        </Configuration>
+      </UnitMonitor>
+    </Monitors>
+  </Monitoring>
+  <Presentation>
+    <StringResources>
+      <StringResource ID="LinuxDiscovery.LinuxScriptMonitor.AlertMessage" />
+    </StringResources>
+  </Presentation>
+  <LanguagePacks>
+    <LanguagePack ID="ENU" IsDefault="true">
+      <DisplayStrings>
+        <DisplayString ElementID="LinuxDiscovery.DemoLinuxClass">
+          <Name>Demo Linux Class</Name>
+          <Description></Description>
+        </DisplayString>
+        <DisplayString ElementID="LinuxDiscovery.DemoLinuxClass" SubElementID="RoleName">
+          <Name>Role Name</Name>
+          <Description></Description>
+        </DisplayString>
+        <DisplayString ElementID="LinuxDiscovery.DemoLinuxClassDiscovery">
+          <Name>Demo Linux Class Discovery</Name>
+          <Description>Demo Linux Class Discovery</Description>
+        </DisplayString>
+        <DisplayString ElementID="LinuxDiscovery.TimedShellCommand.Discovery.DataSource">
+          <Name>UNIX/Linux Timed Shell Command Discovery Data Source</Name>
+          <Description>A scheduled data source module type, for use in discoveries, which runs a shell command through a WS-Management invocation.</Description>
+        </DisplayString>
+        <DisplayString ElementID="LinuxDiscovery.TimedShellCommand.Discovery.DataSource" SubElementID="Interval">
+          <Name>Interval</Name>
+          <Description>The frequency interval, in seconds, at which the data source will run.</Description>
+        </DisplayString>
+        <DisplayString ElementID="LinuxDiscovery.TimedShellCommand.Discovery.DataSource" SubElementID="Timeout">
+          <Name>Timeout</Name>
+          <Description>Timeout (in seconds). If the command runs for longer than the timeout, its process is stopped without waiting for completion.</Description>
+        </DisplayString>
+        <DisplayString ElementID="LinuxDiscovery.LinuxScriptMonitor">
+          <Name>Linux Script Monitor </Name>
+          <Description>Linux Script Monitor </Description>
+        </DisplayString>
+        <DisplayString ElementID="LinuxDiscovery.LinuxScriptMonitor.AlertMessage">
+          <Name>Linux Script Monitor Alert</Name>
+          <Description></Description>
+        </DisplayString>
+        <DisplayString ElementID="LinuxDiscovery.LinuxScriptMonitor" SubElementID="StatusOK">
+          <Name>StatusOK</Name>
+          <Description>StatusOK</Description>
+        </DisplayString>
+        <DisplayString ElementID="LinuxDiscovery.LinuxScriptMonitor" SubElementID="StatusError">
+          <Name>StatusError</Name>
+          <Description>StatusError</Description>
+        </DisplayString>
+      </DisplayStrings>
+      <KnowledgeArticles></KnowledgeArticles>
+    </LanguagePack>
+  </LanguagePacks>
+</ManagementPack>

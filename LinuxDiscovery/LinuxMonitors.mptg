@@ -1,0 +1,41 @@
+<TemplateGroup>
+  <Instances>
+    <Instance ID="Instance1cb8bbbf42bb4bd8ba0ce5a2d4aaa2da" Type="Microsoft.SystemCenter.Authoring.CodeGeneration.Monitoring.UnitMonitor" Version="1.0.0.0">
+      <UnitMonitorConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+        <MonitorType>UnixShellCmdL!Microsoft.Unix.ShellCommand.TwoState.MonitorType</MonitorType>
+        <MonitorConfig>&lt;Interval&gt;90&lt;/Interval&gt;&lt;SyncTime /&gt;&lt;TargetSystem&gt;$Target/Host/Property[Type="Unix!Microsoft.Unix.Computer"]/NetworkName$&lt;/TargetSystem&gt;&lt;UserName&gt;$RunAs[Name="Unix!Microsoft.Unix.ActionAccount"]/UserName$&lt;/UserName&gt;&lt;Password&gt;$RunAs[Name="Unix!Microsoft.Unix.ActionAccount"]/Password$&lt;/Password&gt;&lt;ShellCommand&gt;/opt/microsoft/scx/testscript.sh 2&lt;/ShellCommand&gt;&lt;TimeOut&gt;120&lt;/TimeOut&gt;&lt;TimeOutInMS&gt;120000&lt;/TimeOutInMS&gt;&lt;HealthyExpression&gt;&lt;And&gt;&lt;Expression&gt;&lt;RegExExpression&gt;&lt;ValueExpression&gt;&lt;XPathQuery Type="Integer"&gt;//*[local-name()="StdOut"]&lt;/XPathQuery&gt;&lt;/ValueExpression&gt;&lt;Operator&gt;ContainsSubstring&lt;/Operator&gt;&lt;Pattern&gt;OK&lt;/Pattern&gt;&lt;/RegExExpression&gt;&lt;/Expression&gt;&lt;Expression&gt;&lt;SimpleExpression&gt;&lt;ValueExpression&gt;&lt;XPathQuery Type="String"&gt;//*[local-name()="ReturnCode"]&lt;/XPathQuery&gt;&lt;/ValueExpression&gt;&lt;Operator&gt;Equal&lt;/Operator&gt;&lt;ValueExpression&gt;&lt;Value Type="String"&gt;0&lt;/Value&gt;&lt;/ValueExpression&gt;&lt;/SimpleExpression&gt;&lt;/Expression&gt;&lt;/And&gt;&lt;/HealthyExpression&gt;&lt;ErrorExpression&gt;&lt;And&gt;&lt;Expression&gt;&lt;RegExExpression&gt;&lt;ValueExpression&gt;&lt;XPathQuery Type="Integer"&gt;//*[local-name()="StdOut"]&lt;/XPathQuery&gt;&lt;/ValueExpression&gt;&lt;Operator&gt;ContainsSubstring&lt;/Operator&gt;&lt;Pattern&gt;NOK&lt;/Pattern&gt;&lt;/RegExExpression&gt;&lt;/Expression&gt;&lt;Expression&gt;&lt;SimpleExpression&gt;&lt;ValueExpression&gt;&lt;XPathQuery Type="String"&gt;//*[local-name()="ReturnCode"]&lt;/XPathQuery&gt;&lt;/ValueExpression&gt;&lt;Operator&gt;Equal&lt;/Operator&gt;&lt;ValueExpression&gt;&lt;Value Type="String"&gt;1&lt;/Value&gt;&lt;/ValueExpression&gt;&lt;/SimpleExpression&gt;&lt;/Expression&gt;&lt;/And&gt;&lt;/ErrorExpression&gt;</MonitorConfig>
+        <MonitorOperationalStates>
+          <OperationalState>
+            <OperationalStateId>StatusOK</OperationalStateId>
+            <OperationalStateDisplayName>StatusOK</OperationalStateDisplayName>
+            <MonitorTypeStateId>StatusOK</MonitorTypeStateId>
+            <HealthState>Success</HealthState>
+          </OperationalState>
+          <OperationalState>
+            <OperationalStateId>StatusError</OperationalStateId>
+            <OperationalStateDisplayName>StatusError</OperationalStateDisplayName>
+            <MonitorTypeStateId>StatusError</MonitorTypeStateId>
+            <HealthState>Error</HealthState>
+          </OperationalState>
+        </MonitorOperationalStates>
+        <MonitorRunAs>Unix!Microsoft.Unix.ActionAccount</MonitorRunAs>
+        <ParentMonitor>Health!System.Health.AvailabilityState</ParentMonitor>
+        <Accessibility>Internal</Accessibility>
+        <Id>LinuxScriptMonitor</Id>
+        <DisplayName>Linux Script Monitor </DisplayName>
+        <Description>Linux Script Monitor </Description>
+        <Target>LinuxDiscovery.DemoLinuxClass</Target>
+        <Enabled>true</Enabled>
+        <Category>AvailabilityHealth</Category>
+        <Remotable>true</Remotable>
+        <Priority>Normal</Priority>
+        <AlertAutoResolve>true</AlertAutoResolve>
+        <AlertOnState>Error</AlertOnState>
+        <AlertPriority>Normal</AlertPriority>
+        <AlertSeverity>MatchMonitorHealth</AlertSeverity>
+        <AlertName>Linux Script Monitor Alert</AlertName>
+        <ConfirmDelivery>false</ConfirmDelivery>
+      </UnitMonitorConfig>
+    </Instance>
+  </Instances>
+</TemplateGroup>

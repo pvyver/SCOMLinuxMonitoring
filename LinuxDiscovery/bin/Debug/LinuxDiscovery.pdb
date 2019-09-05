@@ -1,0 +1,17 @@
+DemoClass.mpx*LinuxDiscovery.DemoLinuxClass*5*12*ClassType
+LinuxDiscoveryDS.mpx*LinuxDiscovery.TimedShellCommand.Discovery.DataSource*4*8*DataSourceModuleType
+LinuxDiscoveryDS.mpx*LinuxDiscovery.ShellCommand.ProbeAction*65*6*ProbeActionModuleType
+LinuxDiscoveryDS.mpx*Unix.Authoring.ShellScript.ProbeAction*95*6*ProbeActionModuleType
+LinuxDiscovery.mptg.mpx*LinuxDiscovery.DemoLinuxClassDiscovery*6*8*Discovery
+LinuxMonitors.mptg.mpx*LinuxDiscovery.LinuxScriptMonitor*6*8*UnitMonitor
+LinuxMonitors.mptg.mpx*LinuxDiscovery.LinuxScriptMonitor.AlertMessage*81*8*StringResource
+DemoClass.mpx*LinuxDiscovery.DemoLinuxClass*14*10*DisplayString
+DemoClass.mpx*LinuxDiscovery.DemoLinuxClass*18*10*DisplayString*SubElementID*RoleName
+LinuxDiscovery.mptg.mpx*LinuxDiscovery.DemoLinuxClassDiscovery*51*10*DisplayString
+LinuxDiscoveryDS.mpx*LinuxDiscovery.TimedShellCommand.Discovery.DataSource*138*10*DisplayString
+LinuxDiscoveryDS.mpx*LinuxDiscovery.TimedShellCommand.Discovery.DataSource*142*10*DisplayString*SubElementID*Interval
+LinuxDiscoveryDS.mpx*LinuxDiscovery.TimedShellCommand.Discovery.DataSource*146*10*DisplayString*SubElementID*Timeout
+LinuxMonitors.mptg.mpx*LinuxDiscovery.LinuxScriptMonitor*87*10*DisplayString
+LinuxMonitors.mptg.mpx*LinuxDiscovery.LinuxScriptMonitor.AlertMessage*91*10*DisplayString
+LinuxMonitors.mptg.mpx*LinuxDiscovery.LinuxScriptMonitor*95*10*DisplayString*SubElementID*StatusOK
+LinuxMonitors.mptg.mpx*LinuxDiscovery.LinuxScriptMonitor*99*10*DisplayString*SubElementID*StatusError

@@ -1,0 +1,25 @@
+﻿<ManagementPackFragment SchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <TypeDefinitions>
+    <EntityTypes>
+      <ClassTypes>
+          <ClassType ID="LinuxDiscovery.DemoLinuxClass" Abstract="false" Accessibility="Public" Hosted="true" Singleton="false" Base="Linux!Microsoft.Linux.UserApplication">
+            <Property ID="RoleName" Type="string" Key="true" />
+          </ClassType>
+      </ClassTypes>
+    </EntityTypes>
+  </TypeDefinitions>
+  <LanguagePacks>
+    <LanguagePack ID="ENU" IsDefault="true">
+      <DisplayStrings>
+        <DisplayString ElementID="LinuxDiscovery.DemoLinuxClass">
+          <Name>Demo Linux Class</Name>
+          <Description></Description>
+        </DisplayString>
+        <DisplayString ElementID="LinuxDiscovery.DemoLinuxClass" SubElementID="RoleName">
+          <Name>Role Name</Name>
+          <Description></Description>
+        </DisplayString>
+      </DisplayStrings>
+    </LanguagePack>
+  </LanguagePacks>
+</ManagementPackFragment>

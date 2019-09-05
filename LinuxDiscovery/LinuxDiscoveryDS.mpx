@@ -1,0 +1,153 @@
+﻿<ManagementPackFragment SchemaVersion="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <TypeDefinitions>
+    <ModuleTypes>
+      <DataSourceModuleType ID="LinuxDiscovery.TimedShellCommand.Discovery.DataSource" Accessibility="Public" Batching="false">
+        <Configuration>
+          <IncludeSchemaTypes>
+            <SchemaType>System!System.Discovery.MapperSchema</SchemaType>
+            <SchemaType>System!System.ExpressionEvaluatorSchema</SchemaType>
+          </IncludeSchemaTypes>
+          <xsd:element name="Interval" type="xsd:integer" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="TargetSystem" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="ShellCommand" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="Timeout" type="xsd:integer" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="UserName" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="Password" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="FilterExpression" type="ExpressionType" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="ClassId" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+          <xsd:element name="InstanceSettings" type="SettingsType" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        </Configuration>
+        <OverrideableParameters>
+          <OverrideableParameter ID="Interval" Selector="$Config/Interval$" ParameterType="int" />
+          <OverrideableParameter ID="Timeout" Selector="$Config/Timeout$" ParameterType="int" />
+        </OverrideableParameters>
+        <ModuleImplementation Isolation="Any">
+          <Composite>
+            <MemberModules>
+              <DataSource ID="Scheduler" TypeID="System!System.Discovery.Scheduler">
+                <Scheduler>
+                  <SimpleReccuringSchedule>
+                    <Interval>$Config/Interval$</Interval>
+                    <SyncTime />
+                  </SimpleReccuringSchedule>
+                  <ExcludeDates />
+                </Scheduler>
+              </DataSource>
+              <ProbeAction ID="InvokeProbe" TypeID="LinuxDiscovery.ShellCommand.ProbeAction">
+                <TargetSystem>$Config/TargetSystem$</TargetSystem>
+                <ShellCommand>$Config/ShellCommand$</ShellCommand>
+                <Timeout>$Config/Timeout$</Timeout>
+                <UserName>$Config/UserName$</UserName>
+                <Password>$Config/Password$</Password>
+              </ProbeAction>
+              <ConditionDetection ID="Filter" TypeID="System!System.ExpressionFilter">
+                <Expression>$Config/FilterExpression$</Expression>
+              </ConditionDetection>
+              <ConditionDetection ID="Mapper" TypeID="System!System.Discovery.ClassSnapshotDataMapper">
+                <ClassId>$Config/ClassId$</ClassId>
+                <InstanceSettings>$Config/InstanceSettings$</InstanceSettings>
+              </ConditionDetection>
+            </MemberModules>
+            <Composition>
+              <Node ID="Mapper">
+                <Node ID="Filter">
+                  <Node ID="InvokeProbe">
+                    <Node ID="Scheduler" />
+                  </Node>
+                </Node>
+              </Node>
+            </Composition>
+          </Composite>
+        </ModuleImplementation>
+        <OutputType>System!System.Discovery.Data</OutputType>
+      </DataSourceModuleType>
+
+    <ProbeActionModuleType ID="LinuxDiscovery.ShellCommand.ProbeAction" Accessibility="Public" Batching="false" PassThrough="false">
+      <Configuration>
+        <xsd:element name="TargetSystem" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        <xsd:element name="ShellCommand" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        <xsd:element name="Timeout" type="xsd:integer" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        <xsd:element name="UserName" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        <xsd:element name="Password" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+      </Configuration>
+      <ModuleImplementation Isolation="Any">
+        <Composite>
+          <MemberModules>
+            <ProbeAction ID="InvokeProbe" TypeID="Unix!Microsoft.Unix.WSMan.Invoke.VarPriv.ProbeAction">
+              <TargetSystem>$Config/TargetSystem$</TargetSystem>
+              <UserName>$Config/UserName$</UserName>
+              <Password>$Config/Password$</Password>
+              <Uri>http://schemas.microsoft.com/wbem/wscim/1/cim-schema/2/SCX_OperatingSystem?__cimnamespace=root/scx</Uri>
+              <Selector />
+              <InvokeAction>ExecuteShellCommand</InvokeAction>
+              <Input>&lt;p:ExecuteShellCommand_INPUT xmlns:p="http://schemas.microsoft.com/wbem/wscim/1/cim-schema/2/SCX_OperatingSystem"&gt;&lt;p:command&gt;$Config/ShellCommand$&lt;/p:command&gt;&lt;p:timeout&gt;$Config/Timeout$&lt;/p:timeout&gt;&lt;/p:ExecuteShellCommand_INPUT&gt;</Input>
+              <TimeOutInMS>300000</TimeOutInMS>
+            </ProbeAction>
+          </MemberModules>
+          <Composition>
+            <Node ID="InvokeProbe" />
+          </Composition>
+        </Composite>
+      </ModuleImplementation>
+      <OutputType>WSMan!Microsoft.SystemCenter.WSManagement.WSManData</OutputType>
+      <InputType>System!System.BaseData</InputType>
+    </ProbeActionModuleType>
+    <ProbeActionModuleType ID="Unix.Authoring.ShellScript.ProbeAction" Accessibility="Public" Batching="false" PassThrough="false">
+      <Configuration>
+        <xsd:element name="TargetSystem" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        <xsd:element name="ShellScript" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        <xsd:element name="ScriptArguments" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        <xsd:element name="Timeout" type="xsd:integer" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        <xsd:element name="UserName" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+        <xsd:element name="Password" type="xsd:string" minOccurs="1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+      </Configuration>
+      <ModuleImplementation Isolation="Any">
+        <Composite>
+          <MemberModules>
+            <ProbeAction ID="InvokeProbe" TypeID="Unix!Microsoft.Unix.WSMan.Invoke.VarPriv.ProbeAction">
+              <TargetSystem>$Config/TargetSystem$</TargetSystem>
+              <UserName>$Config/UserName$</UserName>
+              <Password>$Config/Password$</Password>
+              <Uri>http://schemas.microsoft.com/wbem/wscim/1/cim-schema/2/SCX_OperatingSystem?__cimnamespace=root/scx</Uri>
+              <Selector />
+              <InvokeAction>ExecuteScript</InvokeAction>
+              <Input>
+                &lt;p:ExecuteScript_INPUT xmlns:p="http://schemas.microsoft.com/wbem/wscim/1/cim-schema/2/SCX_OperatingSystem"&gt;
+                &lt;p:script&gt;$Config/ShellScript$&lt;/p:script&gt;
+                &lt;p:arguments&gt;$Config/ScriptArguments$&lt;/p:arguments&gt;
+                &lt;p:timeout&gt;$Config/Timeout$&lt;/p:timeout&gt;
+                &lt;/p:ExecuteScript_INPUT&gt;
+              </Input>
+              <TimeOutInMS>300000</TimeOutInMS>
+            </ProbeAction>
+          </MemberModules>
+          <Composition>
+            <Node ID="InvokeProbe" />
+          </Composition>
+        </Composite>
+      </ModuleImplementation>
+      <OutputType>WSMan!Microsoft.SystemCenter.WSManagement.WSManData</OutputType>
+      <InputType>System!System.BaseData</InputType>
+    </ProbeActionModuleType>
+
+    </ModuleTypes>
+  </TypeDefinitions>
+  <LanguagePacks>
+    <LanguagePack ID="ENU" IsDefault="true">
+      <DisplayStrings>
+        <DisplayString ElementID="LinuxDiscovery.TimedShellCommand.Discovery.DataSource">
+          <Name>UNIX/Linux Timed Shell Command Discovery Data Source</Name>
+          <Description>A scheduled data source module type, for use in discoveries, which runs a shell command through a WS-Management invocation.</Description>
+        </DisplayString>
+        <DisplayString ElementID="LinuxDiscovery.TimedShellCommand.Discovery.DataSource" SubElementID="Interval">
+          <Name>Interval</Name>
+          <Description>The frequency interval, in seconds, at which the data source will run.</Description>
+        </DisplayString>
+        <DisplayString ElementID="LinuxDiscovery.TimedShellCommand.Discovery.DataSource" SubElementID="Timeout">
+          <Name>Timeout</Name>
+          <Description>Timeout (in seconds). If the command runs for longer than the timeout, its process is stopped without waiting for completion.</Description>
+        </DisplayString>
+      </DisplayStrings>
+    </LanguagePack>
+  </LanguagePacks>
+</ManagementPackFragment>

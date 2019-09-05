@@ -1,0 +1,104 @@
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <ProjectGuid>{f674f9aa-1802-4191-bec1-f30485cd8b29}</ProjectGuid>
+    <RootNamespace>LinuxDiscovery</RootNamespace>
+    <Name>LinuxDiscovery</Name>
+    <ManagementPackName>LinuxDiscovery</ManagementPackName>
+    <Version>1.0.0.0</Version>
+    <MpFrameworkVersion>v7.0.2</MpFrameworkVersion>
+    <MpFrameworkProfile>OM</MpFrameworkProfile>
+    <ProductVersion>1.1.0.0</ProductVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <GenerateSealed>false</GenerateSealed>
+    <Company>MyCompany</Company>
+    <Copyright>Copyright (c) MyCompany. All rights reserved.</Copyright>
+    <DelaySigning>false</DelaySigning>
+    <AssemblyOriginatorKeyFile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>false</DebugSymbols>
+    <OutputPath>bin\Release\</OutputPath>
+    <DelaySigning>false</DelaySigning>
+    <Company>MyCompany</Company>
+    <Copyright>Copyright (c) MyCompany. All rights reserved.</Copyright>
+    <DelaySign>false</DelaySign>
+    <AssemblyOriginatorKeyFile />
+  </PropertyGroup>
+  <ItemGroup>
+    <ManagementPackReference Include="Microsoft.Linux.Library">
+      <HintPath>C:\System Center Operations Manager 2019\ManagementPacks\Microsoft.Linux.Library.mp</HintPath>
+      <Alias>Linux</Alias>
+      <MinVersion>10.19.1008.0</MinVersion>
+      <PackageToBundle>False</PackageToBundle>
+    </ManagementPackReference>
+    <ManagementPackReference Include="Microsoft.SystemCenter.Library">
+      <Alias>SC</Alias>
+      <PackageToBundle>false</PackageToBundle>
+    </ManagementPackReference>
+    <ManagementPackReference Include="Microsoft.SystemCenter.WSManagement.Library">
+      <HintPath>C:\System Center Operations Manager 2019\ManagementPacks\Microsoft.SystemCenter.WSManagement.Library.mp</HintPath>
+      <Alias>WSMan</Alias>
+      <MinVersion>10.19.10050.0</MinVersion>
+      <PackageToBundle>False</PackageToBundle>
+    </ManagementPackReference>
+    <ManagementPackReference Include="Microsoft.Unix.Library">
+      <HintPath>C:\System Center Operations Manager 2019\ManagementPacks\Microsoft.Unix.Library.mp</HintPath>
+      <Alias>Unix</Alias>
+      <MinVersion>10.19.1008.0</MinVersion>
+      <PackageToBundle>False</PackageToBundle>
+    </ManagementPackReference>
+    <ManagementPackReference Include="Microsoft.Unix.ShellCommand.Library">
+      <HintPath>C:\System Center Operations Manager 2019\ManagementPacks\Microsoft.Unix.ShellCommand.Library.mpb</HintPath>
+      <Alias>UnixShellCmdL</Alias>
+      <MinVersion>10.19.1008.0</MinVersion>
+      <PackageToBundle>False</PackageToBundle>
+    </ManagementPackReference>
+    <ManagementPackReference Include="Microsoft.Windows.Library">
+      <Alias>Windows</Alias>
+      <PackageToBundle>False</PackageToBundle>
+    </ManagementPackReference>
+    <ManagementPackReference Include="System.Health.Library">
+      <Alias>Health</Alias>
+      <PackageToBundle>false</PackageToBundle>
+    </ManagementPackReference>
+    <ManagementPackReference Include="System.Library">
+      <Alias>System</Alias>
+      <PackageToBundle>false</PackageToBundle>
+    </ManagementPackReference>
+    <ManagementPackReference Include="Microsoft.SystemCenter.Visualization.Library">
+      <Alias>Visualization</Alias>
+      <PackageToBundle>False</PackageToBundle>
+    </ManagementPackReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DemoClass.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="LinuxDiscovery.mptg.mpx">
+      <SubType>Code</SubType>
+      <DependentUpon>LinuxDiscovery.mptg</DependentUpon>
+    </Compile>
+    <Compile Include="LinuxDiscoveryDS.mpx">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="LinuxMonitors.mptg.mpx">
+      <SubType>Code</SubType>
+      <DependentUpon>LinuxMonitors.mptg</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="LinuxDiscovery.mptg">
+      <SubType>Content</SubType>
+      <Generator>FragmentGenerator</Generator>
+    </Content>
+    <Content Include="LinuxMonitors.mptg">
+      <SubType>Content</SubType>
+      <Generator>FragmentGenerator</Generator>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\VSAC\Microsoft.SystemCenter.OperationsManager.targets" />
+</Project>

@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.779
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{D4B43EB3-688B-4EEE-86BD-088F0B28ABB3}") = "LinuxDiscovery", "LinuxDiscovery\LinuxDiscovery.mpproj", "{F674F9AA-1802-4191-BEC1-F30485CD8B29}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F674F9AA-1802-4191-BEC1-F30485CD8B29}.Debug|x86.ActiveCfg = Debug|x86
+		{F674F9AA-1802-4191-BEC1-F30485CD8B29}.Debug|x86.Build.0 = Debug|x86
+		{F674F9AA-1802-4191-BEC1-F30485CD8B29}.Release|x86.ActiveCfg = Release|x86
+		{F674F9AA-1802-4191-BEC1-F30485CD8B29}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3E5D3179-AE1D-4FA6-B766-0CD7C4D80AB8}
+	EndGlobalSection
+EndGlobal

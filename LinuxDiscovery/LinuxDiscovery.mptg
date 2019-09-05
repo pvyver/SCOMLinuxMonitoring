@@ -1,0 +1,27 @@
+<TemplateGroup>
+  <Instances>
+    <Instance ID="Instance3d5876a2e98b4569931758d52012d10f" Type="Microsoft.SystemCenter.Authoring.CodeGeneration.Monitoring.Discovery" Version="1.0.0.0">
+      <DiscoveryConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+        <Id>DemoLinuxClassDiscovery</Id>
+        <DisplayName>Demo Linux Class Discovery</DisplayName>
+        <Description>Demo Linux Class Discovery</Description>
+        <DataSourceId>DS</DataSourceId>
+        <DataSourceConfig>&lt;Interval&gt;300&lt;/Interval&gt;&lt;TargetSystem&gt;$Target/Property[Type="Unix!Microsoft.Unix.Computer"]/PrincipalName$&lt;/TargetSystem&gt;&lt;ShellCommand&gt;ls /opt/microsoft/scx/testscript.sh |wc -l&lt;/ShellCommand&gt;&lt;Timeout&gt;60&lt;/Timeout&gt;&lt;UserName&gt;$RunAs[Name="Unix!Microsoft.Unix.ActionAccount"]/UserName$&lt;/UserName&gt;&lt;Password&gt;$RunAs[Name="Unix!Microsoft.Unix.ActionAccount"]/Password$&lt;/Password&gt;&lt;FilterExpression&gt;&lt;RegExExpression&gt;&lt;ValueExpression&gt;&lt;XPathQuery&gt;//*[local-name()="StdOut"]&lt;/XPathQuery&gt;&lt;/ValueExpression&gt;&lt;Operator&gt;MatchesRegularExpression&lt;/Operator&gt;&lt;Pattern&gt;^1&lt;/Pattern&gt;&lt;/RegExExpression&gt;&lt;/FilterExpression&gt;&lt;ClassId&gt;$MPElement[Name="LinuxDiscovery.DemoLinuxClass"]$&lt;/ClassId&gt;&lt;InstanceSettings&gt;&lt;Settings&gt;&lt;Setting&gt;&lt;Name&gt;$MPElement[Name='LinuxDiscovery.DemoLinuxClass']/RoleName$&lt;/Name&gt;&lt;Value&gt;Demo Linux Role&lt;/Value&gt;&lt;/Setting&gt;&lt;Setting&gt;&lt;Name&gt;$MPElement[Name='Unix!Microsoft.Unix.Computer']/PrincipalName$&lt;/Name&gt;&lt;Value&gt;$Target/Property[Type="Unix!Microsoft.Unix.Computer"]/PrincipalName$&lt;/Value&gt;&lt;/Setting&gt;&lt;Setting&gt;&lt;Name&gt;$MPElement[Name="System!System.Entity"]/DisplayName$&lt;/Name&gt;&lt;Value&gt;$Target/Property[Type="Unix!Microsoft.Unix.Computer"]/PrincipalName$ (Linux Demo Discovery)&lt;/Value&gt;&lt;/Setting&gt;&lt;/Settings&gt;&lt;/InstanceSettings&gt;</DataSourceConfig>
+        <DataSourceType>LinuxDiscovery.TimedShellCommand.Discovery.DataSource</DataSourceType>
+        <Target>Linux!Microsoft.Linux.Computer</Target>
+        <Enabled>true</Enabled>
+        <Remotable>true</Remotable>
+        <Priority>Normal</Priority>
+        <ConfirmDelivery>false</ConfirmDelivery>
+        <Category>Discovery</Category>
+        <DiscoveryClasses>
+          <DiscoveryClassItem>
+            <TypeId>LinuxDiscovery.DemoLinuxClass</TypeId>
+            <Properties />
+          </DiscoveryClassItem>
+        </DiscoveryClasses>
+        <DiscoveryRelationships />
+      </DiscoveryConfig>
+    </Instance>
+  </Instances>
+</TemplateGroup>
